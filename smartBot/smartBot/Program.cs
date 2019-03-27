@@ -8,10 +8,10 @@ namespace smartBot
     class Program
     {
         private static TelegramBotClient Bot;
+        private const string KEY = "800246490:AAEHF0OEn3wva-7zfOZBHYpRXwWUu_NOrj0";
         static void Main(string[] args)
         {
-            Bot = new TelegramBotClient("800246490:AAEHF0OEn3wva-7zfOZBHYpRXwWUu_NOrj0");
-
+            Bot = new TelegramBotClient("kek");//remove before push
             Bot.OnMessage += BotOnMessageReceived;
             Bot.OnCallbackQuery += BotOnCallBackQueryReceived;
 
@@ -52,6 +52,20 @@ namespace smartBot
                 case "/keyboard":
                     break;
                 case "/menu":
+                    var menuKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new []
+                        {
+                            InlineKeyboardButton.WithUrl("VK", "https://vk.com/des1nteresado"),
+                            InlineKeyboardButton.WithUrl("Github", "https://github.com/des1nteresado"),
+                        },
+                        new []
+                        {
+                            InlineKeyboardButton.WithCallbackData("Пункт 1"),
+                            InlineKeyboardButton.WithCallbackData("Пункт 2"),
+                        }
+                    });
+                    await Bot.SendTextMessageAsync(message.From.Id, "Выберите пункт меню", replyMarkup: menuKeyboard);
                     break;
                 default:
                     break;
