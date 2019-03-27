@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ApiAiSDK;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -30,12 +31,21 @@ namespace smartBot
             Bot.StopReceiving();
         }
 
-        private static void BotOnCallBackQueryReceived(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)//пуши по пунктам меню
+        private static async void BotOnCallBackQueryReceived(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)//пуши по пунктам меню
         {
             var buttonText = e.CallbackQuery.Data;
             var name = $"{e.CallbackQuery.From.FirstName} {e.CallbackQuery.From.LastName}";
             Console.Out.WriteLine($"{name} нажал кнопку {buttonText}");
             Bot.AnswerCallbackQueryAsync(e.CallbackQuery.Id, $"Вы нажали кнопку {buttonText}");
+
+            if (buttonText == "Картинка")
+            {
+                await Bot.SendTextMessageAsync(e.CallbackQuery.From.Id, "https://i.pinimg.com/originals/b5/cf/64/b5cf649522caf8d2482fb75ceddb9f0a.jpg");
+            }
+            else if (buttonText == "Видео")
+            {
+                await Bot.SendTextMessageAsync(e.CallbackQuery.From.Id, "https://www.youtube.com/watch?v=c282gsT1iBo");
+            }
         }
 
         private static async void BotOnMessageReceived(object sender, Telegram.Bot.Args.MessageEventArgs e)
@@ -65,7 +75,7 @@ namespace smartBot
                         new[]
                         {
                             new KeyboardButton("Привет.."),
-                            new KeyboardButton("Hello!")
+                            new KeyboardButton("Как дела?")
                         },
                         new[]
                         {
@@ -85,8 +95,8 @@ namespace smartBot
                         },
                         new []
                         {
-                            InlineKeyboardButton.WithCallbackData("Пункт 1"),
-                            InlineKeyboardButton.WithCallbackData("Пункт 2"),
+                            InlineKeyboardButton.WithCallbackData("Картинка"),
+                            InlineKeyboardButton.WithCallbackData("Видео"),
                         }
                     });
                     await Bot.SendTextMessageAsync(message.From.Id, "Выберите пункт меню", replyMarkup: menuKeyboard);
