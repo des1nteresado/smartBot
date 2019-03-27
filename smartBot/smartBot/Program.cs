@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace smartBot
 {
@@ -15,6 +13,7 @@ namespace smartBot
             Bot = new TelegramBotClient("800246490:AAEHF0OEn3wva-7zfOZBHYpRXwWUu_NOrj0");
 
             Bot.OnMessage += BotOnMessageReceived;
+            Bot.OnCallbackQuery += BotOnCallBackQueryReceived;
 
             var me = Bot.GetMeAsync().Result;
             Console.Out.WriteLine("Name = {0}", me.FirstName);
@@ -24,10 +23,39 @@ namespace smartBot
             Bot.StopReceiving();
         }
 
-        private static void BotOnMessageReceived(object sender, Telegram.Bot.Args.MessageEventArgs e)
+        private static void BotOnCallBackQueryReceived(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async void BotOnMessageReceived(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             var message = e.Message;
-            Console.Out.WriteLine("message = {0}", message.Text);
+            if (message == null || message.Type != MessageType.Text)
+            {
+                return;
+            }
+            var name = $"{message.From.FirstName} {message.From.LastName}";
+            Console.Out.WriteLine($"{name}: {message.Text}");
+
+            switch (message.Text)
+            {
+                case "/start":
+                    string text =
+@"Приветствую странник! Этот бот умеет многое..
+Вот список доступных комманд:
+/start - Запуск бота
+/menu - Вывод меню
+/keyboard - Вывод клавиатуры";
+                    await Bot.SendTextMessageAsync(message.From.Id, text);
+                    break;
+                case "/keyboard":
+                    break;
+                case "/menu":
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
